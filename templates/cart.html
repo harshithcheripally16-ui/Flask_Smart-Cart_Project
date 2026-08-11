@@ -130,16 +130,17 @@
     </nav>
 
     <div class="container py-4">
-        <div class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+        <!-- Responsive Header Container (Stacks vertically on mobile, row on tablet/desktop) -->
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 pb-3 mb-4 border-bottom">
             <div>
-                <h2 class="fw-extrabold mb-0"><i class="bi bi-cart3 text-danger me-2"></i>Your Shopping Cart</h2>
+                <h2 class="fw-extrabold mb-1"><i class="bi bi-cart3 text-danger me-2"></i>Your Shopping Cart</h2>
                 <span class="text-muted small">Select items for checkout or perform bulk actions</span>
             </div>
-            <div class="d-flex gap-2">
-                <a href="/user/my-orders" class="btn btn-swiggy-outline btn-sm">
+            <div class="d-flex flex-wrap gap-2">
+                <a href="/user/my-orders" class="btn btn-swiggy-outline btn-sm px-3 flex-grow-1 flex-sm-grow-0 text-center">
                     <i class="bi bi-box-seam text-warning me-1"></i> My Orders
                 </a>
-                <a href="/" class="btn btn-swiggy-outline btn-sm">
+                <a href="/" class="btn btn-swiggy-outline btn-sm px-3 flex-grow-1 flex-sm-grow-0 text-center">
                     <i class="bi bi-arrow-left me-1"></i> Continue Shopping
                 </a>
             </div>
@@ -159,10 +160,10 @@
         <div class="row g-4">
             <!-- Cart Items Table & Controls Column -->
             <div class="col-lg-8">
-                <div class="bg-white rounded-4 p-4 shadow-sm border mb-3">
+                <div class="bg-white rounded-4 p-3 p-sm-4 shadow-sm border mb-3">
                     
-                    <!-- Multi-Select Bulk Action Toolbar -->
-                    <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
+                    <!-- Multi-Select Bulk Action Toolbar (Responsive Stack on Mobile) -->
+                    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 pb-3 mb-3 border-bottom">
                         <div class="d-flex align-items-center gap-2">
                             <input type="checkbox" id="selectAllCart" class="form-check-input fs-5" checked title="Select All Items">
                             <label for="selectAllCart" class="fw-bold text-dark mb-0 style-pointer">Select All Items (<span id="totalItemsCount">{{ cart_items|length }}</span>)</label>
@@ -171,7 +172,7 @@
                         <!-- Bulk Delete Form -->
                         <form method="POST" action="/remove-selected-cart" id="bulkDeleteForm">
                             <input type="hidden" name="product_ids" id="bulkDeleteInput">
-                            <button type="submit" id="btnDeleteSelected" class="btn btn-sm btn-outline-danger rounded-pill px-3 opacity-75" disabled>
+                            <button type="submit" id="btnDeleteSelected" class="btn btn-sm btn-outline-danger rounded-pill px-3 opacity-75 w-100 w-sm-auto" disabled>
                                 <i class="bi bi-trash3 me-1"></i> Delete Selected (<span id="selectedCountBadge">0</span>)
                             </button>
                         </form>
@@ -297,16 +298,16 @@
         </div>
 
         {% else %}
-        <!-- Empty Cart View -->
-        <div class="bg-white rounded-4 p-5 text-center shadow-sm border my-4">
+        <!-- Empty Cart View (Responsive Mobile Layout) -->
+        <div class="bg-white rounded-4 p-4 p-sm-5 text-center shadow-sm border my-4">
             <i class="bi bi-cart-x display-1 text-muted d-block mb-3"></i>
             <h3 class="fw-bold text-dark">Your Cart is Currently Empty</h3>
             <p class="text-muted mb-4">Looks like you haven't added any items to your shopping cart yet.</p>
-            <div class="d-flex justify-content-center gap-2">
-                <a href="/" class="btn btn-swiggy-primary px-4 py-2">
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 mx-auto" style="max-width: 460px;">
+                <a href="/" class="btn btn-swiggy-primary px-4 py-2 w-100 w-sm-auto text-nowrap">
                     <i class="bi bi-bag-plus me-1"></i> Browse Store Products
                 </a>
-                <a href="/user/my-orders" class="btn btn-swiggy-outline px-4 py-2">
+                <a href="/user/my-orders" class="btn btn-swiggy-outline px-4 py-2 w-100 w-sm-auto text-nowrap">
                     <i class="bi bi-box-seam text-warning me-1"></i> View My Orders
                 </a>
             </div>
