@@ -178,7 +178,8 @@
                         </form>
                     </div>
 
-                    <div class="table-responsive">
+                    <!-- Desktop View Table (d-none d-md-block) -->
+                    <div class="table-responsive d-none d-md-block">
                         <table class="table align-middle mb-0">
                             <thead>
                                 <tr class="text-muted small text-uppercase">
@@ -240,6 +241,60 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Mobile Cards View (d-block d-md-none) -->
+                    <div class="d-block d-md-none">
+                        {% for item in cart_items %}
+                        <div class="card border rounded-4 p-3 mb-3 shadow-sm cart-item-mobile-card" id="mobile-card-{{ item.product_id }}">
+                            <div class="d-flex align-items-start justify-content-between gap-2 pb-2 mb-2 border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="checkbox" 
+                                           class="form-check-input cart-item-check fs-5" 
+                                           data-id="{{ item.product_id }}" 
+                                           data-price="{{ item.price }}" 
+                                           data-qty="{{ item.quantity }}" 
+                                           checked>
+                                    <span class="fw-bold text-dark text-truncate" style="max-width: 180px;">{{ item.name }}</span>
+                                </div>
+                                <form method="POST" action="/remove-from-cart/{{ item.product_id }}" class="d-inline">
+                                    <button type="submit" class="btn btn-sm text-danger border-0 p-1" title="Remove Item">
+                                        <i class="bi bi-trash fs-5"></i>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-3 my-2">
+                                <img src="/static/uploads/product_images/{{ item.image }}" 
+                                     class="rounded-3 border shadow-sm" 
+                                     width="64" height="64" style="object-fit: cover;" 
+                                     alt="{{ item.name }}">
+                                <div>
+                                    <span class="badge bg-light text-secondary border mb-1">{{ item.category }}</span>
+                                    <div class="small text-muted">Price: <strong class="text-dark">₹{{ item.price | indian_format }}</strong></div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between pt-2 mt-2 border-top">
+                                <!-- Quantity Stepper -->
+                                <div class="d-inline-flex align-items-center border rounded-pill p-1 bg-light">
+                                    <form method="POST" action="/update-cart/{{ item.product_id }}" class="d-inline">
+                                        <input type="hidden" name="action" value="decrease">
+                                        <button type="submit" class="btn btn-sm btn-light rounded-circle shadow-none py-0 px-2 fw-bold text-danger border-0">-</button>
+                                    </form>
+                                    <span class="fw-bold px-2 text-dark font-monospace" style="min-width: 24px; text-align: center;">{{ item.quantity }}</span>
+                                    <form method="POST" action="/update-cart/{{ item.product_id }}" class="d-inline">
+                                        <input type="hidden" name="action" value="increase">
+                                        <button type="submit" class="btn btn-sm btn-light rounded-circle shadow-none py-0 px-2 fw-bold text-success border-0">+</button>
+                                    </form>
+                                </div>
+                                <div>
+                                    <span class="small text-muted me-1">Subtotal:</span>
+                                    <span class="fw-extrabold text-danger fs-6">₹{{ item.subtotal | indian_format }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top">
@@ -365,19 +420,31 @@
                 let calculatedTotal = 0;
                 let checkedCount = 0;
                 let checkedIds = [];
+                const processedPids = new Set();
+                const totalUniqueItems = new Set();
 
-                itemCheckboxes.forEach(cb => {
-                    const row = document.getElementById('row-' + cb.getAttribute('data-id'));
+                document.querySelectorAll('.cart-item-check').forEach(cb => {
+                    const pid = cb.getAttribute('data-id');
+                    totalUniqueItems.add(pid);
+
+                    if (processedPids.has(pid)) return;
+                    processedPids.add(pid);
+
+                    const row = document.getElementById('row-' + pid);
+                    const mobileCard = document.getElementById('mobile-card-' + pid);
+
                     if (cb.checked) {
                         checkedCount++;
                         const price = parseFloat(cb.getAttribute('data-price')) || 0;
                         const qty = parseInt(cb.getAttribute('data-qty'), 10) || 1;
                         calculatedTotal += price * qty;
-                        checkedIds.push(cb.getAttribute('data-id'));
+                        checkedIds.push(pid);
                         
                         if (row) row.classList.remove('cart-row-inactive');
+                        if (mobileCard) mobileCard.classList.remove('cart-row-inactive');
                     } else {
                         if (row) row.classList.add('cart-row-inactive');
+                        if (mobileCard) mobileCard.classList.add('cart-row-inactive');
                     }
                 });
 
@@ -388,7 +455,7 @@
 
                 // Update Select All Checkbox state
                 if (selectAllCheck) {
-                    selectAllCheck.checked = (checkedCount === itemCheckboxes.length && itemCheckboxes.length > 0);
+                    selectAllCheck.checked = (checkedCount === totalUniqueItems.size && totalUniqueItems.size > 0);
                 }
 
                 // Update Bulk Delete Button state
@@ -439,14 +506,20 @@
             // Event Listener for Select All Header Checkbox
             if (selectAllCheck) {
                 selectAllCheck.addEventListener('change', () => {
-                    itemCheckboxes.forEach(cb => cb.checked = selectAllCheck.checked);
+                    document.querySelectorAll('.cart-item-check').forEach(cb => cb.checked = selectAllCheck.checked);
                     updateCartTotals();
                 });
             }
 
             // Event Listeners for Individual Item Checkboxes
-            itemCheckboxes.forEach(cb => {
-                cb.addEventListener('change', updateCartTotals);
+            document.querySelectorAll('.cart-item-check').forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    const pid = e.target.getAttribute('data-id');
+                    document.querySelectorAll(`.cart-item-check[data-id="${pid}"]`).forEach(sibling => {
+                        sibling.checked = e.target.checked;
+                    });
+                    updateCartTotals();
+                });
             });
 
             // Event Listener for Terms Agreement Checkbox
