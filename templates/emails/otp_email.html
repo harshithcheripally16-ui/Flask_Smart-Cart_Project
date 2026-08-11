@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SmartCart Admin OTP</title>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 20px;
+        }
+        .email-card {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+        .header-brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: #4f46e5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .otp-box {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 8px;
+            text-align: center;
+            padding: 16px;
+            border-radius: 10px;
+            margin: 24px 0;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .footer-note {
+            font-size: 13px;
+            color: #64748b;
+            text-align: center;
+            margin-top: 24px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-card">
+        <div class="header-brand">
+            SmartCart Admin
+        </div>
+        <h2>Admin Registration Verification</h2>
+        <p>Hello <strong>{{ name }}</strong>,</p>
+        <p>Your One-Time Password (OTP) for completing your SmartCart Admin Registration is:</p>
+        
+        <div class="otp-box">
+            {{ otp }}
+        </div>
+        
+        <p style="font-size: 14px; color: #64748b;">
+            This OTP is valid for 10 minutes. Please do not share this code with anyone.
+        </p>
+
+        <div class="footer-note">
+            &copy; 2026 SmartCart E-Commerce System. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Products - SmartCart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-light">
+
+    <!-- Swiggy Styled Navigation Bar with Dropdown Menus -->
+    <nav class="navbar navbar-expand-lg navbar-swiggy sticky-top">
+        <div class="container-fluid px-4">
+            <a href="/admin-dashboard" class="navbar-brand navbar-brand-swiggy">
+                <div class="brand-icon-box"><i class="bi bi-bag-heart-fill"></i></div>
+                <span>SmartCart <span class="badge bg-danger fs-6 rounded-pill font-monospace align-middle">Admin</span></span>
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSwiggy" aria-controls="navbarSwiggy" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarSwiggy">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-1 align-items-lg-center">
+                    <li class="nav-item">
+                        <a href="/admin-dashboard" class="nav-link nav-link-swiggy">
+                            <i class="bi bi-grid-fill"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/item-list" class="nav-link nav-link-swiggy active">
+                            <i class="bi bi-box-seam" style="color: var(--greta-teal);"></i> Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/add-item" class="nav-link nav-link-swiggy">
+                            <i class="bi bi-plus-circle-fill" style="color: var(--greta-teal);"></i> Add Item
+                        </a>
+                    </li>
+
+                    <!-- Swiggy Styled Dropdown Menu: Quick Tools -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-swiggy dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-sliders"></i> Quick Tools
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-swiggy shadow-lg border-0" aria-labelledby="toolsDropdown">
+                            <li><a class="dropdown-item dropdown-item-swiggy" href="/admin/item-list"><i class="bi bi-search text-primary"></i> Search Catalog</a></li>
+                            <li><a class="dropdown-item dropdown-item-swiggy" href="/admin/add-item"><i class="bi bi-file-earmark-plus text-success"></i> Upload New Product</a></li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li><a class="dropdown-item dropdown-item-swiggy" href="/"><i class="bi bi-shop text-warning"></i> Store Preview</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Swiggy Styled Dropdown Menu: Admin Account -->
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="nav-link nav-link-swiggy dropdown-toggle btn-swiggy-outline px-3 py-1 text-dark" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle fs-5" style="color: var(--greta-teal);"></i> <span>{{ session.get('admin_name', 'Admin') }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-swiggy shadow-lg border-0" aria-labelledby="profileDropdown">
+                            <li class="px-3 py-2 border-bottom mb-1">
+                                <div class="fw-bold text-dark">{{ session.get('admin_name', 'Admin User') }}</div>
+                                <div class="small text-muted text-truncate" style="max-width: 180px;">{{ session.get('admin_email', 'admin@smartcart.com') }}</div>
+                            </li>
+                            <li><a class="dropdown-item dropdown-item-swiggy" href="/admin/profile"><i class="bi bi-gear-fill text-primary"></i> Edit Profile & Photo</a></li>
+                            <li><a class="dropdown-item dropdown-item-swiggy" href="/admin/item-list"><i class="bi bi-boxes text-info"></i> Manage Products</a></li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li><a class="dropdown-item dropdown-item-swiggy danger-item" href="/admin-logout"><i class="bi bi-box-arrow-right text-danger"></i> Logout Account</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="bg-white rounded-4 p-4 shadow-sm border">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pb-3 mb-4 border-bottom">
+                <div>
+                    <h2 class="fw-extrabold mb-1"><i class="bi bi-box-seam text-danger me-2"></i>Product Inventory Catalog</h2>
+                    <p class="text-muted mb-0">View, search, category filter, edit, or delete inventory items.</p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <a href="/admin/add-item" class="btn btn-swiggy-primary">
+                        <i class="bi bi-plus-lg me-1"></i> Add Product
+                    </a>
+                </div>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show rounded-4 border-0 shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            {% endwith %}
+
+            <!-- Swiggy Search and Filter Toolbar -->
+            <form method="GET" action="/admin/item-list" class="bg-light p-3 rounded-4 border mb-4">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" name="search" id="clientSearchInput" class="form-control form-control-swiggy border-start-0 ps-0" placeholder="Search product by name..." value="{{ search_term }}">
+                        </div>
+                    </div>
+
+                    <!-- Swiggy Filter Select Dropdown -->
+                    <div class="col-md-4">
+                        <select name="category" class="form-select form-select-swiggy fw-semibold text-secondary">
+                            <option value="">All Product Categories</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-swiggy-primary w-100 py-2">
+                            <i class="bi bi-funnel me-1"></i> Filter
+                        </button>
+                        <a href="/admin/item-list" class="btn btn-swiggy-outline px-3 py-2 text-nowrap d-flex align-items-center" title="Reset Filters">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Product Table -->
+            <div class="table-responsive">
+                <table class="table table-custom align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 70px;">ID</th>
+                            <th style="width: 90px;">Image</th>
+                            <th>Product Details</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td class="fw-bold text-muted">{{ loop.index }}</td>
+                            <td>
+                                <img src="/static/uploads/product_images/{{ product.image }}" 
+                                     class="rounded-3 border shadow-sm" 
+                                     width="64" height="64" style="object-fit: cover;"
+                                     alt="{{ product.name }}">
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark fs-6">{{ product.name }}</div>
+                                <div class="text-muted small text-truncate" style="max-width: 250px;">{{ product.description }}</div>
+                            </td>
+                            <td><span class="category-pill"><i class="bi bi-tag-fill"></i> {{ product.category }}</span></td>
+                            <td class="fw-bold text-danger fs-6">₹{{ product.price | indian_format }}</td>
+                            <td class="text-end">
+                                <!-- Swiggy Action Dropdown Menu -->
+                                <div class="dropdown d-inline-block">
+                                    <button class="btn btn-swiggy-outline btn-sm dropdown-toggle py-1 px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-swiggy dropdown-menu-end shadow-lg border-0">
+                                        <li>
+                                            <a class="dropdown-item dropdown-item-swiggy" href="/admin/view-item/{{ product.product_id }}">
+                                                <i class="bi bi-eye text-primary"></i> View Details
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item dropdown-item-swiggy" href="/admin/update-item/{{ product.product_id }}">
+                                                <i class="bi bi-pencil text-warning"></i> Edit Product
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider my-1"></li>
+                                        <li>
+                                            <button type="button" 
+                                                    class="dropdown-item dropdown-item-swiggy danger-item btn-delete-trigger" 
+                                                    data-product-name="{{ product.name }}" 
+                                                    data-delete-url="/admin/delete-item/{{ product.product_id }}">
+                                                <i class="bi bi-trash text-danger"></i> Delete Product
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox display-4 d-block mb-2 text-secondary"></i>
+                                No products found matching your search criteria.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Styled Bootstrap 5 Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-danger d-flex align-items-center" id="deleteConfirmModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i> Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <p class="text-secondary mb-0">
+                        Are you sure you want to delete <strong id="deleteModalProductName" class="text-dark">this product</strong>?
+                        <br><span class="small text-muted">This action is permanent and will remove the item and its image file from your server.</span>
+                    </p>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-swiggy-outline px-4" data-bs-dismiss="modal">Cancel</button>
+                    <a href="#" id="confirmDeleteLink" class="btn btn-danger px-4 font-weight-bold rounded-3 shadow-sm">
+                        <i class="bi bi-trash me-1"></i> Delete Product
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

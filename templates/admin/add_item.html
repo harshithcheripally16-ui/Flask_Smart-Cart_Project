@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - SmartCart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-light">
+
+    <!-- Swiggy Styled Navigation Bar with Dropdown Menus -->
+    <nav class="navbar navbar-expand-lg navbar-swiggy sticky-top">
+        <div class="container-fluid px-4">
+            <a href="/admin-dashboard" class="navbar-brand navbar-brand-swiggy">
+                <div class="brand-icon-box"><i class="bi bi-bag-heart-fill"></i></div>
+                <span>SmartCart <span class="badge bg-danger fs-6 rounded-pill font-monospace align-middle">Admin</span></span>
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSwiggy" aria-controls="navbarSwiggy" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarSwiggy">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-1 align-items-lg-center">
+                    <li class="nav-item">
+                        <a href="/admin-dashboard" class="nav-link nav-link-swiggy">
+                            <i class="bi bi-grid-fill"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/item-list" class="nav-link nav-link-swiggy">
+                            <i class="bi bi-box-seam"></i> Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/admin/add-item" class="nav-link nav-link-swiggy active">
+                            <i class="bi bi-plus-circle-fill" style="color: var(--greta-teal);"></i> Add Item
+                        </a>
+                    </li>
+
+                    <!-- Swiggy Styled Dropdown Menu: Quick Tools -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-swiggy dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-sliders"></i> Quick Tools
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-swiggy shadow-lg border-0" aria-labelledby="toolsDropdown">
+                            <li><a class="dropdown-item dropdown-item-swiggy" href="/admin/item-list"><i class="bi bi-search text-primary"></i> Search Catalog</a></li>
+                            <li><a class="dropdown-item dropdown-item-swiggy" href="/admin/add-item"><i class="bi bi-file-earmark-plus text-success"></i> Upload New Product</a></li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li><a class="dropdown-item dropdown-item-swiggy" href="/"><i class="bi bi-shop text-warning"></i> Store Preview</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Swiggy Styled Dropdown Menu: Admin Account -->
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="nav-link nav-link-swiggy dropdown-toggle btn-swiggy-outline px-3 py-1 text-dark" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle text-danger fs-5"></i> <span>{{ session.get('admin_name', 'Admin') }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-swiggy shadow-lg border-0" aria-labelledby="profileDropdown">
+                            <li class="px-3 py-2 border-bottom mb-1">
+                                <div class="fw-bold text-dark">{{ session.get('admin_name', 'Admin User') }}</div>
+                                <div class="small text-muted text-truncate" style="max-width: 180px;">{{ session.get('admin_email', 'admin@smartcart.com') }}</div>
+                            </li>
+                            <li><a class="dropdown-item dropdown-item-swiggy" href="/admin/profile"><i class="bi bi-gear-fill text-primary"></i> Edit Profile & Photo</a></li>
+                            <li><a class="dropdown-item dropdown-item-swiggy" href="/admin/item-list"><i class="bi bi-boxes text-info"></i> Manage Products</a></li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li><a class="dropdown-item dropdown-item-swiggy danger-item" href="/admin-logout"><i class="bi bi-box-arrow-right text-danger"></i> Logout Account</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4" style="max-width: 680px;">
+        <div class="bg-white rounded-4 p-4 shadow-sm border">
+            <div class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
+                <h2 class="fw-extrabold mb-0"><i class="bi bi-plus-circle-fill text-danger me-2"></i>Add New Product</h2>
+                <a href="/admin/item-list" class="btn btn-swiggy-outline btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Catalog
+                </a>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show rounded-4 border-0 shadow-sm" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            {% endwith %}
+
+            <form method="POST" action="/admin/add-item" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Product Name</label>
+                    <input type="text" name="name" class="form-control form-control-swiggy" placeholder="e.g. Wireless Headphones" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Description</label>
+                    <textarea name="description" class="form-control form-control-swiggy" rows="3" placeholder="Enter product features and specifications..." required></textarea>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Category</label>
+                        <input type="text" name="category" class="form-control form-control-swiggy" placeholder="e.g. Electronics" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Price (₹)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">₹</span>
+                            <input type="number" step="0.01" name="price" class="form-control form-control-swiggy border-start-0" placeholder="0.00" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Product Image</label>
+                    <input type="file" name="image" class="form-control form-control-swiggy" accept="image/*" required>
+                </div>
+
+                <button type="submit" class="btn btn-swiggy-primary w-100 py-2 fs-6">
+                    <i class="bi bi-cloud-upload me-2"></i>Add Product to Catalog
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

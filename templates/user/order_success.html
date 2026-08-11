@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - SmartCart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .success-icon-badge {
+            width: 80px;
+            height: 80px;
+            font-size: 2.8rem;
+            background: #ecfdf5;
+            color: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.15);
+            animation: pulseOrder 2s infinite;
+        }
+        @keyframes pulseOrder {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <!-- Swiggy Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-swiggy sticky-top">
+        <div class="container-fluid px-4">
+            <a href="/" class="navbar-brand navbar-brand-swiggy">
+                <div class="brand-icon-box"><i class="bi bi-bag-heart-fill"></i></div>
+                <span>SmartCart <span class="badge bg-success fs-6 rounded-pill align-middle ms-1">Order Confirmed</span></span>
+            </a>
+            
+            <div class="ms-auto d-flex align-items-center gap-2">
+                <a href="/user/my-orders" class="btn btn-swiggy-outline py-1 px-3">
+                    <i class="bi bi-box-seam me-1"></i> My Orders
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container py-5" style="max-width: 680px;">
+        <div class="bg-white rounded-4 p-4 p-md-5 shadow-sm border text-center">
+            
+            <div class="success-icon-badge mx-auto mb-4">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            
+            <h2 class="fw-extrabold text-success mb-1"><i class="bi bi-check-circle-fill me-2"></i>Your Order is Confirmed!</h2>
+            <p class="text-muted mb-4">Thank you for shopping with <strong>SmartCart</strong>. Your order has been placed and payment is verified.</p>
+
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show rounded-4 border-0 shadow-sm text-start" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            {% endwith %}
+
+            <!-- Order Details Box -->
+            <div class="bg-light p-4 rounded-4 border text-start mb-4">
+                <div class="row g-2">
+                    <div class="col-sm-6">
+                        <span class="text-muted small fw-bold text-uppercase d-block">Order Reference ID</span>
+                        <span class="fw-bold text-dark font-monospace fs-5">#{{ order.order_id }}</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="text-muted small fw-bold text-uppercase d-block">Razorpay Payment ID</span>
+                        <span class="badge bg-white text-success border px-2 py-1 font-monospace">{{ order.razorpay_payment_id }}</span>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                        <span class="text-muted small fw-bold text-uppercase d-block">Order Date</span>
+                        <span class="fw-semibold text-secondary">{{ order.created_at }}</span>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                        <span class="text-muted small fw-bold text-uppercase d-block">Total Paid</span>
+                        <span class="fw-extrabold fs-5" style="color: var(--greta-teal);">₹{{ order.amount | indian_format }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purchased Items Breakdown Table -->
+            <div class="text-start mb-4">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-receipt me-1"></i> Order Items Summary</h5>
+                <div class="table-responsive bg-white rounded-3 border">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                            <tr class="text-muted small text-uppercase">
+                                <th>Product</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-end">Price</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for it in items %}
+                            <tr>
+                                <td class="fw-bold text-dark">{{ it.product_name }}</td>
+                                <td class="text-center"><span class="badge bg-light text-dark border font-monospace">{{ it.quantity }}</span></td>
+                                <td class="text-end text-muted">₹{{ it.price | indian_format }}</td>
+                                <td class="text-end fw-bold text-danger">₹{{ (it.price * it.quantity) | indian_format }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column flex-sm-row gap-2">
+                <a href="/user/view-invoice/{{ order.order_id }}" target="_blank" class="btn btn-swiggy-primary flex-grow-1 py-2">
+                    <i class="bi bi-file-earmark-text-fill me-1"></i> View Invoice
+                </a>
+                <a href="/user/download-invoice/{{ order.order_id }}" class="btn btn-swiggy-outline flex-grow-1 py-2">
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> Download PDF
+                </a>
+                <a href="/user/my-orders" class="btn btn-swiggy-outline flex-grow-1 py-2">
+                    <i class="bi bi-box-seam me-1"></i> My Orders
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

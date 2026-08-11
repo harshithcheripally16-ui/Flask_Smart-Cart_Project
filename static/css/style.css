@@ -1,0 +1,504 @@
+/* static/css/style.css - "The Year of Greta" (theyearofgreta.com) Light Visual Design System */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --bs-font-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
+  
+  /* "The Year of Greta" Light Theme Tokens */
+  --greta-teal: #00a896;
+  --greta-teal-hover: #00897b;
+  --greta-teal-glow: rgba(0, 168, 150, 0.25);
+  
+  --greta-light-bg: #f8fafc;
+  --greta-light-surface: #ffffff;
+  --greta-card-bg: rgba(255, 255, 255, 0.95);
+  
+  --greta-dark-text: #0f172a;
+  --greta-gray: #64748b;
+  --greta-gray-light: #94a3b8;
+  --greta-white: #ffffff;
+  
+  --greta-border: rgba(0, 168, 150, 0.25);
+  --greta-border-subtle: #e2e8f0;
+  
+  --greta-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06);
+  --greta-shadow-teal: 0 8px 25px rgba(0, 168, 150, 0.15);
+  
+  /* Bootstrap Overrides Compatibility Mapping */
+  --swiggy-orange: var(--greta-teal);
+  --swiggy-orange-hover: var(--greta-teal-hover);
+  --swiggy-orange-light: rgba(0, 168, 150, 0.1);
+  --swiggy-gradient: linear-gradient(135deg, #00a896 0%, #028090 100%);
+  --swiggy-dark: #0f172a;
+  --swiggy-bg: var(--greta-light-bg);
+  --card-bg: var(--greta-card-bg);
+  --text-main: var(--greta-dark-text);
+  --text-muted: var(--greta-gray);
+  --border-color: var(--greta-border-subtle);
+}
+
+body {
+  font-family: var(--bs-font-sans-serif);
+  background-color: var(--greta-light-bg) !important;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(0, 168, 150, 0.05), transparent 45%),
+    radial-gradient(circle at 90% 80%, rgba(2, 128, 144, 0.04), transparent 45%);
+  background-attachment: fixed;
+  color: var(--greta-dark-text) !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+  color: var(--greta-dark-text);
+}
+
+/* ==========================================
+   CAROUSEL & HERO BANNER DESIGN SYSTEM (LIGHT)
+   ========================================== */
+.swiggy-banner-carousel {
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+  margin-bottom: 1.5rem !important;
+}
+
+.swiggy-banner-card {
+  min-height: 270px;
+  padding: 48px 70px 48px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.swiggy-banner-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 6px 14px;
+  border-radius: 50px;
+  margin-bottom: 14px;
+  display: inline-block;
+  background: rgba(0, 168, 150, 0.12) !important;
+  color: var(--greta-teal) !important;
+  border: 1px solid var(--greta-border) !important;
+}
+
+.carousel-indicators {
+  margin-bottom: 1rem;
+}
+
+.carousel-indicators [data-bs-target] {
+  width: 32px;
+  height: 4px;
+  border-radius: 4px;
+  background-color: var(--greta-gray-light);
+  border: none;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.carousel-indicators .active {
+  width: 48px;
+  background-color: var(--greta-teal) !important;
+  opacity: 1;
+  box-shadow: 0 0 10px var(--greta-teal-glow);
+}
+
+.carousel-control-prev, .carousel-control-next {
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--greta-border);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.9;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
+}
+
+.carousel-control-prev {
+  left: 20px;
+}
+
+.carousel-control-next {
+  right: 20px;
+}
+
+.carousel-control-prev:hover, .carousel-control-next:hover {
+  background: var(--greta-teal);
+  border-color: var(--greta-teal);
+  color: #ffffff !important;
+  opacity: 1;
+  box-shadow: 0 0 15px var(--greta-teal-glow);
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  filter: invert(0.2);
+}
+
+.carousel-control-prev:hover .carousel-control-prev-icon,
+.carousel-control-next:hover .carousel-control-next-icon {
+  filter: invert(1);
+}
+
+.category-pill {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--greta-teal) !important;
+  border: 1px solid var(--greta-border) !important;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  z-index: 2;
+}
+
+/* ==========================================
+   1. THEMED INFINITE MARQUEE TICKER (LIGHT)
+   ========================================== */
+.swiggy-marquee-container {
+  background: #ffffff;
+  color: var(--greta-dark-text);
+  padding: 14px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border-radius: 16px;
+  border: 1px solid var(--greta-border);
+  box-shadow: 0 6px 20px rgba(0, 168, 150, 0.08);
+  margin-top: 1.25rem;
+  margin-bottom: 2.25rem;
+  width: 100%;
+}
+
+.swiggy-marquee-track {
+  display: inline-block;
+  animation: swiggyMarquee 28s linear infinite;
+}
+
+.swiggy-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.swiggy-marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+}
+
+.swiggy-marquee-item i {
+  color: var(--greta-teal);
+}
+
+@keyframes swiggyMarquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ==========================================
+   2. NAVBAR & NAVIGATION STYLING (LIGHT)
+   ========================================== */
+.navbar-swiggy {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--greta-border-subtle);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+}
+
+.navbar-brand-swiggy {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--greta-dark-text) !important;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.25s ease;
+}
+
+.navbar-brand-swiggy span {
+  color: var(--greta-dark-text);
+}
+
+.navbar-brand-swiggy:hover {
+  transform: scale(1.03);
+}
+
+.brand-icon-box {
+  width: 40px;
+  height: 40px;
+  background: var(--swiggy-gradient);
+  color: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 0 15px var(--greta-teal-glow);
+}
+
+.nav-link-swiggy {
+  color: var(--greta-gray) !important;
+  font-weight: 600;
+  padding: 8px 16px !important;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+}
+
+.nav-link-swiggy:hover, .nav-link-swiggy.active {
+  color: var(--greta-teal) !important;
+  background: rgba(0, 168, 150, 0.08);
+}
+
+.dropdown-menu-swiggy {
+  background: #ffffff !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--greta-border) !important;
+  border-radius: 16px !important;
+  padding: 8px !important;
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.1);
+}
+
+.dropdown-item-swiggy {
+  color: var(--greta-dark-text) !important;
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item-swiggy:hover {
+  background: rgba(0, 168, 150, 0.08) !important;
+  color: var(--greta-teal) !important;
+  transform: translateX(4px);
+}
+
+.dropdown-item-swiggy.danger-item:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+}
+
+/* ==========================================
+   3. BUTTON STYLING (The Year of Greta Light)
+   ========================================== */
+.btn-swiggy-primary, .btn-primary {
+  background: var(--greta-teal) !important;
+  border-color: var(--greta-teal) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 10px 24px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px var(--greta-teal-glow);
+}
+
+.btn-swiggy-primary:hover, .btn-primary:hover {
+  background: var(--greta-teal-hover) !important;
+  border-color: var(--greta-teal-hover) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 168, 150, 0.35);
+}
+
+.btn-swiggy-outline, .btn-outline-primary {
+  background: #ffffff !important;
+  border: 1.5px solid var(--greta-border) !important;
+  color: var(--greta-teal) !important;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 8px 20px;
+  transition: all 0.3s ease;
+}
+
+.btn-swiggy-outline:hover, .btn-outline-primary:hover {
+  background: rgba(0, 168, 150, 0.08) !important;
+  border-color: var(--greta-teal) !important;
+  color: var(--greta-teal-hover) !important;
+  transform: translateY(-2px);
+}
+
+/* ==========================================
+   4. LIGHT CARDS & CONTAINERS
+   ========================================== */
+.bg-white, .bg-light, .card {
+  background-color: var(--greta-light-surface) !important;
+  border: 1px solid var(--greta-border-subtle) !important;
+  color: var(--greta-dark-text) !important;
+  border-radius: 20px;
+}
+
+.shadow-sm, .shadow, .shadow-lg {
+  box-shadow: var(--greta-shadow) !important;
+}
+
+.card-product-swiggy {
+  background: #ffffff !important;
+  border: 1px solid var(--greta-border-subtle) !important;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.card-product-swiggy:hover {
+  transform: translateY(-8px);
+  border-color: var(--greta-border) !important;
+  box-shadow: var(--greta-shadow-teal) !important;
+}
+
+.product-img-wrapper {
+  position: relative;
+  background: #f8fafc;
+  padding: 16px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--greta-border-subtle);
+}
+
+.product-img-swiggy {
+  height: 220px;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+}
+
+.card-product-swiggy:hover .product-img-swiggy {
+  transform: scale(1.08);
+}
+
+.badge-swiggy-category {
+  background: rgba(0, 168, 150, 0.1);
+  color: var(--greta-teal);
+  border: 1px solid var(--greta-border);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+/* ==========================================
+   5. TABLES & FORMS (LIGHT THEME)
+   ========================================== */
+.table {
+  color: var(--greta-dark-text) !important;
+  --bs-table-bg: transparent !important;
+  border-color: var(--greta-border-subtle) !important;
+}
+
+.table-light, .table thead th {
+  background-color: rgba(0, 168, 150, 0.06) !important;
+  color: var(--greta-teal) !important;
+  border-color: var(--greta-border-subtle) !important;
+  font-family: var(--font-heading);
+  letter-spacing: 0.04em;
+}
+
+.table td {
+  border-color: var(--greta-border-subtle) !important;
+}
+
+.form-control, .form-select {
+  background-color: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: var(--greta-dark-text) !important;
+  border-radius: 12px !important;
+  padding: 10px 16px !important;
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: #ffffff !important;
+  border-color: var(--greta-teal) !important;
+  box-shadow: 0 0 12px var(--greta-teal-glow) !important;
+  color: var(--greta-dark-text) !important;
+}
+
+.form-check-input {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.form-check-input:checked {
+  background-color: var(--greta-teal) !important;
+  border-color: var(--greta-teal) !important;
+}
+
+/* ==========================================
+   6. TEXT & BADGE ACCENTS (LIGHT)
+   ========================================== */
+.text-dark {
+  color: var(--greta-dark-text) !important;
+}
+
+.text-muted, .text-secondary {
+  color: var(--greta-gray) !important;
+}
+
+.text-danger, .text-primary {
+  color: var(--greta-teal) !important;
+}
+
+.bg-warning {
+  background-color: var(--greta-teal) !important;
+  color: #ffffff !important;
+}
+
+.badge {
+  font-family: var(--font-heading);
+}
+
+.border {
+  border-color: var(--greta-border-subtle) !important;
+}
+
+.border-bottom {
+  border-bottom-color: var(--greta-border-subtle) !important;
+}
+
+/* ==========================================
+   7. MODALS & OVERLAYS (LIGHT)
+   ========================================== */
+.modal-content {
+  background: #ffffff !important;
+  border: 1px solid var(--greta-border) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.15);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--greta-border-subtle) !important;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--greta-border-subtle) !important;
+}
+
+.btn-close {
+  filter: none;
+}
+
+/* Footer Styling (Light) */
+footer {
+  background: #ffffff !important;
+  border-top: 1px solid var(--greta-border-subtle);
+  color: var(--greta-gray);
+  margin-top: auto;
+}

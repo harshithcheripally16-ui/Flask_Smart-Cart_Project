@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment - SmartCart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-light">
+
+    <!-- Swiggy Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-swiggy sticky-top">
+        <div class="container-fluid px-4">
+            <a href="/" class="navbar-brand navbar-brand-swiggy">
+                <div class="brand-icon-box"><i class="bi bi-bag-heart-fill"></i></div>
+                <span>SmartCart <span class="badge bg-warning text-dark fs-6 rounded-pill align-middle ms-1">Checkout</span></span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Payment Container -->
+    <div class="container py-5" style="max-width: 540px;">
+        <div class="bg-white rounded-4 p-4 p-md-5 shadow-sm border text-center">
+            
+            <div class="swiggy-icon-circle mx-auto mb-3" style="width: 70px; height: 70px; font-size: 2.2rem; background: rgba(73, 197, 182, 0.15); color: var(--greta-teal); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+            
+            <h2 class="fw-extrabold text-dark mb-1">Complete Order Payment</h2>
+            <p class="text-muted small mb-4">Secure 256-bit SSL encrypted checkout via Razorpay</p>
+
+            <!-- Order Summary Details Card -->
+            <div class="bg-light p-4 rounded-4 border text-start mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-bold text-uppercase">Razorpay Order ID</span>
+                    <span class="badge bg-white text-dark border px-3 py-1 font-monospace">{{ order_id }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-bold text-uppercase">Payment Gateway</span>
+                    <span class="badge" style="background: rgba(73, 197, 182, 0.15); color: var(--greta-teal); border: 1px solid var(--greta-border);"><i class="bi bi-patch-check-fill me-1"></i>Razorpay Test Mode</span>
+                </div>
+                <hr class="my-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-dark fs-5">Total Payable Amount</span>
+                    <span class="display-6 fw-extrabold" style="color: var(--greta-teal);">₹{{ amount | indian_format }}</span>
+                </div>
+            </div>
+
+            <!-- Pay Now Button -->
+            <button id="rzp-button" class="btn btn-swiggy-primary w-100 py-3 fs-5 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm mb-3">
+                <i class="bi bi-lock-fill"></i> Pay ₹{{ amount | indian_format }} Now
+            </button>
+
+            <div class="d-flex align-items-center justify-content-center gap-3 text-muted small mt-3">
+                <span><i class="bi bi-check-circle-fill text-success me-1"></i> UPI</span>
+                <span><i class="bi bi-check-circle-fill text-success me-1"></i> Cards</span>
+                <span><i class="bi bi-check-circle-fill text-success me-1"></i> Netbanking</span>
+                <span><i class="bi bi-check-circle-fill text-success me-1"></i> Wallets</span>
+            </div>
+
+            <div class="mt-4 pt-3 border-top text-center">
+                <a href="/cart" class="small text-muted text-decoration-none">
+                    <i class="bi bi-arrow-left me-1"></i> Cancel & Return to Cart
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Razorpay Checkout JS Library -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var options = {
+            "key": "{{ key_id }}",
+            "amount": "{{ razorpay_amount }}", // Amount in paise
+            "currency": "INR",
+            "name": "SmartCart Store",
+            "description": "Order Payment #{{ order_id }}",
+            "order_id": "{{ order_id }}",
+            "prefill": {
+                "name": "{{ session.get('user_name', 'Test Customer') }}",
+                "email": "{{ session.get('user_email', 'testcustomer@example.com') }}",
+                "contact": "9999999999"
+            },
+            "theme": {
+                "color": "#fc8019"
+            },
+            "handler": function (response) {
+                // Build a form and POST to server for verification
+                var form = document.createElement("form");
+                form.method = "POST";
+                form.action = "/verify-payment";
+
+                var fields = {
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature || 'simulated_sig_' + response.razorpay_payment_id
+                };
+
+                for (var name in fields) {
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = name;
+                    input.value = fields[name];
+                    form.appendChild(input);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            },
+            "modal": {
+                "ondismiss": function() {
+                    console.log('Razorpay modal closed by user');
+                }
+            }
+        };
+
+        var rzp = new Razorpay(options);
+
+        document.getElementById('rzp-button').onclick = function(e){
+            rzp.open();
+            e.preventDefault();
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

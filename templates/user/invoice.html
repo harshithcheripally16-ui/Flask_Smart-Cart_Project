@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tax Invoice - Order #{{ order.order_id }}</title>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 20mm;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: #ffffff !important;
+            }
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .invoice-box {
+            padding: 10px;
+        }
+        .brand-header {
+            border-bottom: 2px solid #fc8019;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .brand-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fc8019;
+            margin: 0;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin: 5px 0 0 0;
+        }
+        .meta-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .meta-table td {
+            vertical-align: top;
+            padding: 4px 0;
+        }
+        .section-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #0f172a;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .items-table th {
+            background-color: #f8fafc;
+            color: #334155;
+            font-weight: bold;
+            text-align: left;
+            border: 1px solid #cbd5e1;
+            padding: 8px 10px;
+        }
+        .items-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 10px;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .total-box {
+            margin-top: 15px;
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+            color: #dc2626;
+        }
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px dashed #cbd5e1;
+            text-align: center;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="invoice-box">
+    <!-- Screen Action Toolbar -->
+    <div class="no-print" style="background: rgba(18, 24, 33, 0.98); color: #fff; border: 1px solid rgba(73, 197, 182, 0.3); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; font-family: sans-serif; border-radius: 12px; margin-bottom: 20px;">
+        <span style="font-weight: bold; font-size: 14px; color: #49c5b6;">SmartCart Tax Invoice</span>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="window.print()" style="background: #49c5b6; color: #0b0f14; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                Print Invoice
+            </button>
+            <a href="/user/download-invoice/{{ order.order_id }}" style="background: rgba(73, 197, 182, 0.15); color: #49c5b6; border: 1px solid rgba(73, 197, 182, 0.3); text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; display: inline-block;">
+                Download PDF
+            </a>
+            <a href="/user/my-orders" style="background: #1e293b; color: #9c9c9c; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; display: inline-block;">
+                Back to Orders
+            </a>
+        </div>
+    </div>
+    <!-- Header -->
+    <div class="brand-header">
+        <h1 class="brand-title">SmartCart</h1>
+        <p class="subtitle">Official Order Tax Invoice & Receipt</p>
+    </div>
+
+    <!-- Order Metadata -->
+    <table class="meta-table">
+        <tr>
+            <td style="width: 50%;">
+                <strong>Invoice To:</strong><br>
+                Customer ID: #{{ order.user_id }}<br>
+                Payment Method: Razorpay Online Gateway<br>
+                Payment Status: <strong>PAID</strong>
+            </td>
+            <td style="width: 50%;" class="text-right">
+                <strong>Order Reference:</strong> #{{ order.order_id }}<br>
+                <strong>Order Date:</strong> {{ order.created_at }}<br>
+                <strong>Payment ID:</strong> {{ order.razorpay_payment_id }}<br>
+                <strong>Razorpay Order ID:</strong> {{ order.razorpay_order_id }}
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title">Purchased Items Breakdown</div>
+
+    <!-- Items Table -->
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th style="width: 50%;">Product Name</th>
+                <th class="text-center" style="width: 15%;">Quantity</th>
+                <th class="text-right" style="width: 17%;">Price (INR)</th>
+                <th class="text-right" style="width: 18%;">Subtotal (INR)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for it in items %}
+            <tr>
+                <td>{{ it.product_name }}</td>
+                <td class="text-center">{{ it.quantity }}</td>
+                <td class="text-right">Rs. {{ it.price | indian_format }}</td>
+                <td class="text-right">Rs. {{ (it.price * it.quantity) | indian_format }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Grand Total -->
+    <div class="total-box">
+        Grand Total Paid: Rs. {{ order.amount | indian_format }}
+    </div>
+
+    <!-- Footer Note -->
+    <div class="footer-note">
+        This is a computer-generated tax invoice. Thank you for shopping with SmartCart!<br>
+        For customer support or inquiries, visit smartcart.com/contact
+    </div>
+</div>
+
+</body>
+</html>
